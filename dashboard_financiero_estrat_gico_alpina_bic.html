@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpina Productos Alimenticios S.A. BIC | Dashboard Financiero y Estratégico</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js & Datalabels Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header Institucional -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-500/20">
+          A
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold text-slate-900 leading-tight">Alpina Productos Alimenticios S.A. BIC</h1>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full border border-blue-200">EMIS University</span>
+          </div>
+          <p class="text-xs text-slate-500">Inteligencia Financiera, Eficiencia Operativa y Solvencia Trienal</p>
+        </div>
+      </div>
+      
+      <!-- Controles de Filtro Global / Vistas -->
+      <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+        <button id="btnTab1" onclick="switchTab('resumen')" class="tab-btn px-3 py-1.5 rounded-lg font-medium transition-all bg-white text-blue-700 shadow-sm">
+          Tablero Ejecutivo
+        </button>
+        <button id="btnTab2" onclick="switchTab('analisis')" class="tab-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">
+          Estados & Matriz Cuadrantes
+        </button>
+        <button id="btnTab3" onclick="switchTab('macro')" class="tab-btn px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition-all">
+          Coyuntura IPC & Riesgos
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- SECCIÓN 1: TABLERO EJECUTIVO (KPIs & VISUALIZACIONES PRINCIPALES) -->
+    <div id="view-resumen" class="space-y-6">
+      
+      <!-- Fila de Tarjetas de Resumen KPI con Apertura Modal -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <!-- KPI 1 -->
+        <div onclick="openKpiModal('ebitda_margin')" class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Margen EBITDA</span>
+            <span class="p-1 rounded-md bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 transition"><i data-lucide="trending-up" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mb-1">15,10%</div>
+          <div class="flex items-center text-xs text-emerald-600 font-semibold gap-1">
+            <span>+4,26 p.p.</span>
+            <span class="text-slate-400 font-normal">vs. 2023 (10,84%)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between border-t pt-1.5 border-slate-100">
+            <span>Eficiencia en manufactura</span>
+            <span class="text-blue-600 underline text-[10px]">Ver detalle</span>
+          </p>
+        </div>
+
+        <!-- KPI 2 -->
+        <div onclick="openKpiModal('ebitda_growth')" class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">EBITDA Absoluto</span>
+            <span class="p-1 rounded-md bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mb-1">$344.554 <span class="text-xs font-normal text-slate-500">MM</span></div>
+          <div class="flex items-center text-xs text-blue-600 font-semibold gap-1">
+            <span>+17,37% a/a</span>
+            <span class="text-slate-400 font-normal">(+45,8% trienio)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between border-t pt-1.5 border-slate-100">
+            <span>Generación operativa bruta</span>
+            <span class="text-blue-600 underline text-[10px]">Ver detalle</span>
+          </p>
+        </div>
+
+        <!-- KPI 3 -->
+        <div onclick="openKpiModal('net_margin')" class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Margen Neto</span>
+            <span class="p-1 rounded-md bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100 transition"><i data-lucide="pie-chart" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mb-1">5,01%</div>
+          <div class="flex items-center text-xs text-indigo-600 font-semibold gap-1">
+            <span>+0,72 p.p.</span>
+            <span class="text-slate-400 font-normal">Utilidad $114.367 MM</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between border-t pt-1.5 border-slate-100">
+            <span>Conversión neta a socios</span>
+            <span class="text-blue-600 underline text-[10px]">Ver detalle</span>
+          </p>
+        </div>
+
+        <!-- KPI 4 -->
+        <div onclick="openKpiModal('leverage')" class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Deuda Neta / EBITDA</span>
+            <span class="p-1 rounded-md bg-teal-50 text-teal-600 group-hover:bg-teal-100 transition"><i data-lucide="shield-check" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-slate-900 mb-1">1,76x</div>
+          <div class="flex items-center text-xs text-emerald-600 font-semibold gap-1">
+            <span>-33,6% vs 2024</span>
+            <span class="text-slate-400 font-normal">(Antes 2,65x)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center justify-between border-t pt-1.5 border-slate-100">
+            <span>Apalancamiento controlado</span>
+            <span class="text-blue-600 underline text-[10px]">Ver detalle</span>
+          </p>
+        </div>
+
+        <!-- KPI 5 -->
+        <div onclick="openKpiModal('liquidity')" class="bg-white p-4 rounded-2xl border border-amber-200 bg-amber-50/20 shadow-sm hover:shadow-md hover:border-amber-400 transition-all cursor-pointer group">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-amber-800">Razón Corriente</span>
+            <span class="p-1 rounded-md bg-amber-100 text-amber-700 group-hover:bg-amber-200 transition"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+          </div>
+          <div class="text-2xl font-bold text-amber-900 mb-1">0,84x</div>
+          <div class="flex items-center text-xs text-red-600 font-semibold gap-1">
+            <span>Déficit < 1,0x</span>
+            <span class="text-slate-400 font-normal">(2023: 0,90x)</span>
+          </div>
+          <p class="text-[11px] text-amber-700/80 mt-2 flex items-center justify-between border-t pt-1.5 border-amber-200/50">
+            <span>Fondo maniobra negativo</span>
+            <span class="text-amber-800 underline text-[10px]">Ver alerta</span>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Barra de Filtros Interactivos de Gráficos -->
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-700 flex items-center gap-1.5"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i> Filtros dinámicos de visualización:</span>
+          <div class="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-50" id="filter-year-group">
+            <button onclick="filterTimeHorizon('ALL')" class="filter-btn px-2.5 py-1 rounded-md font-semibold bg-white text-blue-700 shadow-xs">Trienio 23-25</button>
+            <button onclick="filterTimeHorizon('24-25')" class="filter-btn px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900">2024 vs 2025</button>
+            <button onclick="filterTimeHorizon('2025')" class="filter-btn px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900">Solo 2025</button>
+          </div>
+        </div>
+        <div class="text-slate-400 text-[11px] italic">
+          Haz clic en las leyendas de los gráficos para aislar o contrastar series individuales en tiempo real.
+        </div>
+      </div>
+
+      <!-- Fila de Gráficos Principales -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Gráfico 1: Evolución de Eficiencia Operativa (Línea curva suavizada con puntos) -->
+        <div class="lg:col-span-8 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap justify-between items-start mb-1 gap-2">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Tendencia Temporal Suavizada</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">Margen operativo expande rentabilidad trienal</h3>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] font-medium text-slate-500">Unidades: % de Ingresos</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Evolución comparativa del Margen EBITDA vs. Margen Neto individual.</p>
+          </div>
+
+          <div class="relative h-64 w-full">
+            <canvas id="lineTrendChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap justify-between items-center text-[10px] text-slate-400">
+            <span><strong>Fuente:</strong> EMIS University / Estados Financieros Consolidados e Individuales Alpina BIC.</span>
+            <span><strong>Muestra:</strong> N = 3 periodos fiscales cerrados (1 de enero 2023 a 31 de diciembre 2025).</span>
+          </div>
+        </div>
+
+        <!-- Gráfico 2: Estructura de Asignación del Ingreso Operativo (Pie Chart con porcentajes internos) -->
+        <div class="lg:col-span-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-1">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Distribución del Ingreso</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">Costo absorbe mayor proporción facturada</h3>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mb-2">Desglose de cada $100 ingresados en el cierre 2025.</p>
+          </div>
+
+          <div class="relative h-56 w-full flex items-center justify-center">
+            <canvas id="donutIncomeChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-0.5 text-[10px] text-slate-400">
+            <div><strong>Fuente:</strong> Balance & PyG Alpina BIC - Base EMIS.</div>
+            <div><strong>Muestra:</strong> n = 1 año fiscal (2025), Base de Ingresos: $2.282.389 MM COP.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Fila de Gráficos Secundarios: Matriz Cuadrantes y Desapalancamiento -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Gráfico 3: Matriz Estratégica de 4 Cuadrantes (Burbujas) -->
+        <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap justify-between items-start mb-1 gap-2">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded">Matriz Estratégica 4 Cuadrantes</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">Solvencia avanza hacia zona óptima</h3>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Tamaño burbuja = EBITDA ($ MM)
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">Intersección de solvencia (Deuda Neta/EBITDA, eje X invertido) vs. Eficiencia (Margen EBITDA %, eje Y).</p>
+          </div>
+
+          <div class="relative h-64 w-full">
+            <canvas id="bubbleMatrixChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap justify-between items-center text-[10px] text-slate-400">
+            <span><strong>Fuente:</strong> Modelación Financiera EMIS & Ratios de Solvencia Alpina.</span>
+            <span><strong>Población:</strong> N = 2 años con métrica Deuda Neta computable (2024–2025).</span>
+          </div>
+        </div>
+
+        <!-- Gráfico 4: Flujo Operativo vs Carga de Pasivos (Barras Comparativas) -->
+        <div class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-1">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Generación vs Obligaciones</span>
+                <h3 class="text-base font-bold text-slate-900 mt-1">Flujo operativo duplica capacidad previa</h3>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">Comparativa de Flujo de Caja Operativo vs Pasivo Corriente ($ MM).</p>
+          </div>
+
+          <div class="relative h-64 w-full">
+            <canvas id="barSolvencyChart"></canvas>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap justify-between items-center text-[10px] text-slate-400">
+            <span><strong>Fuente:</strong> Estados de Flujo de Efectivo Alpina BIC (EMIS).</span>
+            <span><strong>Muestra:</strong> n = 2 periodos auditados (2024 vs 2025).</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN 2: ESTADOS DETALLADOS & MATRIZ COMPLETA -->
+    <div id="view-analisis" class="hidden space-y-6">
+      
+      <!-- Tabla Consolidada Interactiva -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Consolidación de Cuentas Principales (EMIS University)</h3>
+            <p class="text-xs text-slate-500">Valores auditados expresados en Millones de Pesos Colombianos ($ MM COP).</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-slate-100 px-3 py-1 rounded-lg text-slate-600 font-medium">Empresa: Alpina S.A. BIC</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left text-xs text-slate-600">
+            <thead class="bg-slate-50 text-slate-700 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Cuenta Financiera</th>
+                <th class="py-3 px-3 text-right">2023 ($ MM)</th>
+                <th class="py-3 px-3 text-right">2024 ($ MM)</th>
+                <th class="py-3 px-3 text-right">2025 ($ MM)</th>
+                <th class="py-3 px-3 text-right">Var. Abs (23-25)</th>
+                <th class="py-3 px-3 text-right">Var. % (23-25)</th>
+                <th class="py-3 px-3 text-right">Var. % (24-25)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4 font-medium text-slate-900">Ingresos Operacionales Netos</td>
+                <td class="py-2.5 px-3 text-right">$2.180.243</td>
+                <td class="py-2.5 px-3 text-right">$2.098.377</td>
+                <td class="py-2.5 px-3 text-right font-semibold text-slate-900">$2.282.389</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+$102.146</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+4,68%</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+8,77%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4 font-medium text-slate-900">Costo de Ventas (COGS)</td>
+                <td class="py-2.5 px-3 text-right">-$1.307.458</td>
+                <td class="py-2.5 px-3 text-right">-$1.219.180</td>
+                <td class="py-2.5 px-3 text-right font-semibold text-slate-900">-$1.309.480</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-$2.022</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">+0,15%</td>
+                <td class="py-2.5 px-3 text-right text-amber-600">+7,41%</td>
+              </tr>
+              <tr class="bg-blue-50/30 font-medium">
+                <td class="py-2.5 px-4 text-blue-900">Utilidad Bruta</td>
+                <td class="py-2.5 px-3 text-right">$872.785</td>
+                <td class="py-2.5 px-3 text-right">$879.197</td>
+                <td class="py-2.5 px-3 text-right font-semibold text-blue-900">$972.909</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+$100.124</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+11,47%</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+10,66%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4">Gastos de Admón., Ventas y Operación</td>
+                <td class="py-2.5 px-3 text-right">-$735.469</td>
+                <td class="py-2.5 px-3 text-right">-$653.340</td>
+                <td class="py-2.5 px-3 text-right">-$697.610</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+$37.859</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">-5,15%</td>
+                <td class="py-2.5 px-3 text-right text-amber-600">+6,78%</td>
+              </tr>
+              <tr class="bg-slate-50/60 font-semibold">
+                <td class="py-2.5 px-4 text-slate-900">EBITDA</td>
+                <td class="py-2.5 px-3 text-right">$236.358</td>
+                <td class="py-2.5 px-3 text-right">$293.552</td>
+                <td class="py-2.5 px-3 text-right text-blue-700 font-bold">$344.554</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+$108.196</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+45,78%</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+17,37%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4">Gastos Financieros Netos</td>
+                <td class="py-2.5 px-3 text-right">-$74.450</td>
+                <td class="py-2.5 px-3 text-right">-$76.120</td>
+                <td class="py-2.5 px-3 text-right">-$73.698</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">+$752</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-1,01%</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">-3,18%</td>
+              </tr>
+              <tr class="bg-emerald-50/30 font-semibold">
+                <td class="py-2.5 px-4 text-emerald-900">Utilidad Neta</td>
+                <td class="py-2.5 px-3 text-right">$93.628</td>
+                <td class="py-2.5 px-3 text-right">$100.521</td>
+                <td class="py-2.5 px-3 text-right text-emerald-700 font-bold">$114.367</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+$20.739</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+22,15%</td>
+                <td class="py-2.5 px-3 text-right text-emerald-600">+13,77%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4">Activo Corriente / Total</td>
+                <td class="py-2.5 px-3 text-right">$438.638 / $1.536.664</td>
+                <td class="py-2.5 px-3 text-right">$431.780 / $1.431.184</td>
+                <td class="py-2.5 px-3 text-right font-medium">$519.871 / $1.344.661</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-$192.003</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-12,49%</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-6,05%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4">Pasivo Corriente / Total</td>
+                <td class="py-2.5 px-3 text-right">$486.674 / $1.298.111</td>
+                <td class="py-2.5 px-3 text-right">$508.250 / $1.255.425</td>
+                <td class="py-2.5 px-3 text-right font-medium">$621.829 / $1.180.945</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-$117.166</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-9,03%</td>
+                <td class="py-2.5 px-3 text-right text-slate-500">-5,93%</td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-2.5 px-4">Patrimonio Neto</td>
+                <td class="py-2.5 px-3 text-right">$238.554</td>
+                <td class="py-2.5 px-3 text-right">$175.759</td>
+                <td class="py-2.5 px-3 text-right font-medium text-slate-900">$163.716</td>
+                <td class="py-2.5 px-3 text-right text-red-600">-$74.838</td>
+                <td class="py-2.5 px-3 text-right text-red-600">-31,37%</td>
+                <td class="py-2.5 px-3 text-right text-red-600">-6,85%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cuadrantes de Estrategia para la Junta Directiva -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-blue-600 border border-slate-200">
+          <h4 class="font-bold text-slate-900 text-sm mb-1">1. Eficiencia Operativa y Fijación de Precios</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            La contención del costo de ventas (+0,15% acumulado frente a un +4,68% en ventas) demuestra poder de negociación con acopiadores lecheros y optimización logística en plantas. El margen EBITDA se ubica en un saludable 15,10%.
+          </p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-emerald-600 border border-slate-200">
+          <h4 class="font-bold text-slate-900 text-sm mb-1">2. Reducción Exitosa del Apalancamiento</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            La relación Deuda Neta / EBITDA descendió a 1,76x en 2025, situándose holgadamente por debajo del covenant límite común de 2,5x. La generación de flujo operativo de $406.785 MM (+106%) fue el motor central de desendeudamiento.
+          </p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-amber-500 border border-slate-200">
+          <h4 class="font-bold text-slate-900 text-sm mb-1">3. Tensión Estructural de Corto Plazo (Liquidez)</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            La liquidez corriente de 0,84x indica que por cada $1,00 de deuda que vence en menos de 12 meses, Alpina cuenta con $0,84 en activos circulantes. Se requiere reperfilar deuda de tesorería a tramos de 3 a 5 años.
+          </p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-purple-600 border border-slate-200">
+          <h4 class="font-bold text-slate-900 text-sm mb-1">4. Brecha EBITDA vs. Utilidad Neta</h4>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            El EBITDA creció 45,78% mientras la utilidad neta solo lo hizo al 22,15%. La tasa impositiva y el costo de financiamiento (afectado por tasas del Banco de la República) consumieron más de $160.000 MM de la ganancia operativa.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN 3: COYUNTURA IPC DANE (AGOSTO 2026 / VISORIA) & RIESGOS MACRO -->
+    <div id="view-macro" class="hidden space-y-6">
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-md">Observatorio Macronegocios</span>
+          <span class="text-xs text-slate-400">Datos Oficiales DANE / IPC Visoria</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-900 mb-2">
+          Impacto Macroeconómico de la Coyuntura Inflacionaria sobre el EBITDA de Alpina
+        </h2>
+        <p class="text-xs text-slate-600 leading-relaxed max-w-4xl">
+          El análisis riguroso de los datos del Índice de Precios al Consumidor (IPC) con corte a agosto 2026 emitidos por el DANE y sistematizados por Visoria permite proyectar las amenazas directas e indirectas sobre la estructura de costos y márgenes de Alpina.
+        </p>
+
+        <!-- Indicadores Clave del Reporte IPC -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase">Inflación Anual (Agosto 2026)</span>
+            <div class="text-2xl font-bold text-rose-600 my-1">6,24%</div>
+            <p class="text-[11px] text-slate-500">+1,14 p.p. de aceleración frente al registro de diciembre anterior.</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase">Inflación Año Corrido (Ene-Ago)</span>
+            <div class="text-2xl font-bold text-amber-600 my-1">5,35%</div>
+            <p class="text-[11px] text-slate-500">Variación mensual en agosto de 0,39%, empujada por alimentos y servicios.</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase">Alojamiento, Luz & Gas (Anual)</span>
+            <div class="text-2xl font-bold text-blue-600 my-1">5,74%</div>
+            <p class="text-[11px] text-slate-500">Aporte de 1,78 puntos porcentuales al IPC total. Impacto severo en cadena de frío.</p>
+          </div>
+        </div>
+
+        <!-- Transmisión al EBITDA vs Utilidad Neta -->
+        <div class="space-y-4 text-xs text-slate-600">
+          <h4 class="font-bold text-slate-900 text-sm">Canales de Transmisión Directa sobre el EBITDA:</h4>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-slate-200 p-4 rounded-xl">
+              <span class="font-semibold text-slate-900 flex items-center gap-1.5 mb-1.5">
+                <i data-lucide="package" class="w-4 h-4 text-blue-600"></i> Presión en Materias Primas e Insumos Agropecuarios
+              </span>
+              <p class="text-slate-600 leading-relaxed">
+                El observatorio destaca una dispersión aguda en precios de fertilizantes (la urea oscilando entre $131.000 y $202.000 por bulto según el puerto y departamento) y alzas interanuales en alimentos perecederos superiores al 18%. Estos costos elevan el costo de producción de la leche cruda, trasladándose como presión inmediata al Costo de Ventas (COGS) de Alpina.
+              </p>
+            </div>
+
+            <div class="border border-slate-200 p-4 rounded-xl">
+              <span class="font-semibold text-slate-900 flex items-center gap-1.5 mb-1.5">
+                <i data-lucide="truck" class="w-4 h-4 text-amber-600"></i> Indexación Salarial y Logística (Cadena de Frío)
+              </span>
+              <p class="text-slate-600 leading-relaxed">
+                Con una inflación corrida del 5,35% en solo 8 meses, las tarifas de transporte, bodegaje y contratos de arrendamiento suben al ritmo del IPC. Además, una inflación anual del 6,24% fija un piso alto para la negociación del salario mínimo, lo que incrementa los gastos de personal en plantas industriales y distribución tienda a tienda (TAT).
+              </p>
+            </div>
+          </div>
+
+          <!-- Precisión Técnica BanRep -->
+          <div class="bg-amber-50/70 border border-amber-200 p-4 rounded-xl flex items-start gap-3 mt-4">
+            <i data-lucide="info" class="w-5 h-5 text-amber-700 shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold text-amber-900 block mb-0.5">Diferenciación Técnica Clave para la Junta Directiva:</span>
+              <p class="text-amber-800 leading-relaxed">
+                La tasa de política monetaria del Banco de la República (alrededor del 9,25%) no afecta directamente el <strong>EBITDA</strong>, debido a que este indicador mide la rentabilidad puramente operativa antes de la estructura de financiamiento (intereses). Sin embargo, impacta decisivamente en la <strong>Utilidad Neta</strong> a través de los gastos financieros (-$73.698 MM netos en 2025) y eleva el costo de renovar los $621.829 MM en pasivos de corto plazo.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL INTERACTIVO DE DETALLE DE KPI -->
+  <div id="kpiModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-150">
+      <button onclick="closeKpiModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1 rounded-full hover:bg-slate-100 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div id="modalContent">
+        <!-- Contenido dinámico inyectado por JS -->
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+        <button onclick="closeKpiModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">
+          Cerrar ventana
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer con Cita Metodológica Institucional -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center text-[11px] text-slate-500 gap-2">
+      <div>
+        <strong>Metodología:</strong> Análisis financiero con $N=3$ ejercicios fiscales (2023, 2024, 2025). Fuente: Estados Financieros Individuales EMIS University & DANE IPC.
+      </div>
+      <div>
+        Dashboard desarrollado para Comité Financiero & Junta Directiva • Alpina Productos Alimenticios S.A. BIC
+      </div>
+    </div>
+  </footer>
+
+  <!-- LÓGICA DE JAVASCRIPT Y GRÁFICAS -->
+  <script>
+    // Inicializar Iconos Lucide
+    lucide.createIcons();
+
+    // Registro de Plugins para Chart.js
+    Chart.register(ChartDataLabels);
+
+    // ==========================================
+    // 1. GESTIÓN DE PESTAÑAS (TABS)
+    // ==========================================
+    function switchTab(tabId) {
+      document.getElementById('view-resumen').classList.add('hidden');
+      document.getElementById('view-analisis').classList.add('hidden');
+      document.getElementById('view-macro').classList.add('hidden');
+
+      const tabs = ['btnTab1', 'btnTab2', 'btnTab3'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(t);
+        btn.classList.remove('bg-white', 'text-blue-700', 'shadow-sm');
+        btn.classList.add('text-slate-600');
+      });
+
+      if (tabId === 'resumen') {
+        document.getElementById('view-resumen').classList.remove('hidden');
+        document.getElementById('btnTab1').classList.add('bg-white', 'text-blue-700', 'shadow-sm');
+        document.getElementById('btnTab1').classList.remove('text-slate-600');
+      } else if (tabId === 'analisis') {
+        document.getElementById('view-analisis').classList.remove('hidden');
+        document.getElementById('btnTab2').classList.add('bg-white', 'text-blue-700', 'shadow-sm');
+        document.getElementById('btnTab2').classList.remove('text-slate-600');
+      } else if (tabId === 'macro') {
+        document.getElementById('view-macro').classList.remove('hidden');
+        document.getElementById('btnTab3').classList.add('bg-white', 'text-blue-700', 'shadow-sm');
+        document.getElementById('btnTab3').classList.remove('text-slate-600');
+      }
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // 2. CONFIGURACIÓN DE GRÁFICAS INTERACTIVAS
+    // ==========================================
+    
+    // Gráfica 1: Línea Suavizada de Tendencia (Margen EBITDA vs Margen Neto)
+    const ctxLine = document.getElementById('lineTrendChart').getContext('2d');
+    const lineTrendChart = new Chart(ctxLine, {
+      type: 'line',
+      data: {
+        labels: ['2023', '2024', '2025'],
+        datasets: [
+          {
+            label: 'Margen EBITDA (%)',
+            data: [10.84, 13.99, 15.10],
+            borderColor: '#2563eb', // Blue-600
+            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4, // Curva suavizada
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#2563eb',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            datalabels: {
+              align: 'top',
+              anchor: 'end',
+              formatter: (v) => v.toFixed(2) + '%',
+              color: '#1e3a8a',
+              font: { weight: 'bold', size: 10 }
+            }
+          },
+          {
+            label: 'Margen Neto (%)',
+            data: [4.29, 4.79, 5.01],
+            borderColor: '#4f46e5', // Indigo-600
+            backgroundColor: 'transparent',
+            borderWidth: 2.5,
+            borderDash: [4, 4],
+            tension: 0.4, // Curva suavizada
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#4f46e5',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            datalabels: {
+              align: 'bottom',
+              anchor: 'start',
+              formatter: (v) => v.toFixed(2) + '%',
+              color: '#312e81',
+              font: { weight: '600', size: 10 }
+            }
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { boxWidth: 12, usePointStyle: true, font: { size: 11, family: 'Inter' } }
+          },
+          tooltip: {
+            backgroundColor: '#0f172a',
+            padding: 10,
+            callbacks: {
+              label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 2,
+            max: 18,
+            ticks: {
+              callback: (v) => v + '%',
+              stepSize: 4,
+              font: { size: 10 }
+            },
+            grid: { color: '#f1f5f9' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { weight: '600', size: 11 } }
+          }
+        }
+      }
+    });
+
+    // Gráfica 2: Pie / Donut Chart con porcentajes DENTRO de la rebanada
+    const ctxDonut = document.getElementById('donutIncomeChart').getContext('2d');
+    const donutIncomeChart = new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: ['Costo Ventas', 'Gastos Operativos', 'Carga Financ./Imp.', 'Utilidad Neta'],
+        datasets: [{
+          data: [57.37, 30.56, 7.06, 5.01], // Total = 100% de los ingresos 2025
+          backgroundColor: [
+            '#0284c7', // Sky-600
+            '#6366f1', // Indigo-500
+            '#94a3b8', // Slate-400
+            '#10b981'  // Emerald-500
+          ],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { boxWidth: 10, font: { size: 10, family: 'Inter' } }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.label}: ${ctx.raw}% del ingreso ($2.282.389 MM)`
+            }
+          },
+          datalabels: {
+            color: '#ffffff',
+            font: { weight: 'bold', size: 10 },
+            formatter: (value) => value + '%', // Porcentaje DENTRO de la rebanada
+            textAlign: 'center'
+          }
+        },
+        cutout: '45%'
+      }
+    });
+
+    // Gráfica 3: Matriz Estratégica de 4 Cuadrantes (Burbujas)
+    // Eje X: Deuda Neta / EBITDA (Solvencia) - menor es mejor
+    // Eje Y: Margen EBITDA % (Eficiencia) - mayor es mejor
+    // Tamaño R: EBITDA en escala
+    const ctxBubble = document.getElementById('bubbleMatrixChart').getContext('2d');
+    const bubbleMatrixChart = new Chart(ctxBubble, {
+      type: 'bubble',
+      data: {
+        datasets: [
+          {
+            label: 'Año 2024 (2.65x, 13.99%)',
+            data: [{ x: 2.65, y: 13.99, r: 12, anio: '2024', ebitda: '$293.552 MM' }],
+            backgroundColor: 'rgba(234, 88, 12, 0.7)', // Orange-600
+            borderColor: '#ea580c',
+            borderWidth: 2
+          },
+          {
+            label: 'Año 2025 (1.76x, 15.10%) - Zona Óptima',
+            data: [{ x: 1.76, y: 15.10, r: 16, anio: '2025', ebitda: '$344.554 MM' }],
+            backgroundColor: 'rgba(16, 185, 129, 0.75)', // Emerald-500
+            borderColor: '#10b981',
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { boxWidth: 10, font: { size: 10 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const p = ctx.raw;
+                return ` [${p.anio}] Deuda/EBITDA: ${p.x}x | Margen EBITDA: ${p.y}% | EBITDA: ${p.ebitda}`;
+              }
+            }
+          },
+          datalabels: {
+            align: 'top',
+            formatter: (v) => `${v.anio}: ${v.x}x / ${v.y}%`,
+            font: { size: 10, weight: 'bold' },
+            color: '#334155'
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: '← Menor Riesgo (Deuda Neta / EBITDA) Mayor Riesgo →',
+              font: { size: 10, weight: '600' }
+            },
+            min: 1.0,
+            max: 3.2,
+            grid: {
+              color: (context) => (context.tick.value === 2.0 ? '#cbd5e1' : '#f8fafc'),
+              lineWidth: (context) => (context.tick.value === 2.0 ? 2 : 1)
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Margen EBITDA (%) ↑',
+              font: { size: 10, weight: '600' }
+            },
+            min: 10,
+            max: 18,
+            grid: {
+              color: (context) => (context.tick.value === 14 ? '#cbd5e1' : '#f8fafc'),
+              lineWidth: (context) => (context.tick.value === 14 ? 2 : 1)
+            }
+          }
+        }
+      }
+    });
+
+    // Gráfica 4: Barras Comparativas Flujo Operativo vs Pasivo Corriente
+    const ctxBar = document.getElementById('barSolvencyChart').getContext('2d');
+    const barSolvencyChart = new Chart(ctxBar, {
+      type: 'bar',
+      data: {
+        labels: ['2024', '2025'],
+        datasets: [
+          {
+            label: 'Flujo de Caja Operativo',
+            data: [197344, 406785],
+            backgroundColor: '#10b981',
+            borderRadius: 6,
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              formatter: (v) => '$' + (v/1000).toFixed(0) + 'K MM',
+              font: { size: 10, weight: '600' }
+            }
+          },
+          {
+            label: 'Pasivos a Corto Plazo',
+            data: [508250, 621829],
+            backgroundColor: '#f59e0b',
+            borderRadius: 6,
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              formatter: (v) => '$' + (v/1000).toFixed(0) + 'K MM',
+              font: { size: 10, weight: '600' }
+            }
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: { boxWidth: 10, font: { size: 10 } }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()} MM COP`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 750000,
+            ticks: {
+              callback: (v) => '$' + (v/1000) + 'K',
+              font: { size: 10 }
+            },
+            grid: { color: '#f1f5f9' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ==========================================
+    // 3. FILTRO TEMPORAL INTERACTIVO
+    // ==========================================
+    function filterTimeHorizon(range) {
+      const buttons = document.querySelectorAll('#filter-year-group button');
+      buttons.forEach(b => {
+        b.classList.remove('bg-white', 'text-blue-700', 'shadow-xs', 'font-semibold');
+        b.classList.add('text-slate-600', 'font-medium');
+      });
+      event.target.classList.add('bg-white', 'text-blue-700', 'shadow-xs', 'font-semibold');
+      event.target.classList.remove('text-slate-600', 'font-medium');
+
+      if (range === 'ALL') {
+        lineTrendChart.data.labels = ['2023', '2024', '2025'];
+        lineTrendChart.data.datasets[0].data = [10.84, 13.99, 15.10];
+        lineTrendChart.data.datasets[1].data = [4.29, 4.79, 5.01];
+      } else if (range === '24-25') {
+        lineTrendChart.data.labels = ['2024', '2025'];
+        lineTrendChart.data.datasets[0].data = [13.99, 15.10];
+        lineTrendChart.data.datasets[1].data = [4.79, 5.01];
+      } else if (range === '2025') {
+        lineTrendChart.data.labels = ['2025'];
+        lineTrendChart.data.datasets[0].data = [15.10];
+        lineTrendChart.data.datasets[1].data = [5.01];
+      }
+      lineTrendChart.update();
+    }
+
+    // ==========================================
+    // 4. MODALES INFORMATIVOS DE KPIS
+    // ==========================================
+    const kpiDetails = {
+      ebitda_margin: {
+        title: "Margen EBITDA: 15,10%",
+        badge: "Eficiencia Operativa",
+        badgeColor: "bg-emerald-100 text-emerald-800",
+        dax: "Margen_EBITDA = DIVIDE([EBITDA_Total], [Ingresos_Netos], 0)",
+        description: "En 2025 Alpina generó $15,10 de caja operativa bruta por cada $100 comercializados, superando el 10,84% de 2023.",
+        implication: "Indica un notable control de los costos directos de leche cruda e insumos agropecuarios durante el trienio, amortiguando los incrementos de nómina.",
+        boardAction: "Mantener la meta piso en 14,00% ante la aceleración del IPC observada en 2026."
+      },
+      ebitda_growth: {
+        title: "EBITDA Absoluto: $344.554 MM COP",
+        badge: "Generación de Caja",
+        badgeColor: "bg-blue-100 text-blue-800",
+        dax: "Crec_EBITDA = DIVIDE([EBITDA] - CALCULATE([EBITDA], PREVIOUSYEAR()), CALCULATE([EBITDA], PREVIOUSYEAR()), 0)",
+        description: "Crecimiento de +17,37% en 2025 frente a 2024, consolidando un avance acumulado del 45,78% desde 2023 ($236.358 MM).",
+        implication: "A pesar de que el ritmo de aceleración se moderó (en 2024 creció 24,2%), la masa bruta de flujo operativo respalda la operación de las plantas.",
+        boardAction: "Supervisar si la inflación de alimentos deteriora el volumen de ventas en las referencias de mayor margen."
+      },
+      net_margin: {
+        title: "Margen Neto: 5,01%",
+        badge: "Retorno a Accionistas",
+        badgeColor: "bg-indigo-100 text-indigo-800",
+        dax: "Margen_Neto = DIVIDE([Utilidad_Neta], [Ingresos_Netos], 0)",
+        description: "La utilidad neta alcanzó $114.367 MM COP en 2025 (+13,77% anual y +22,15% en el trienio).",
+        implication: "Existe una brecha de conversión: el EBITDA crece +45,8% mientras la utilidad neta solo avanza +22,1%. El gasto financiero (-$73.698 MM netos) y los impuestos drenan valor.",
+        boardAction: "Revisar la estructura impositiva y la dependencia de créditos a tasa variable indexados a la IBR o IPC."
+      },
+      leverage: {
+        title: "Deuda Neta / EBITDA: 1,76x",
+        badge: "Solvencia Estructural",
+        badgeColor: "bg-teal-100 text-teal-800",
+        dax: "DeudaNeta_EBITDA = DIVIDE([Deuda_Financiera] - [Efectivo], [EBITDA], 0)",
+        description: "Reducción sustancial desde 2,65x en 2024 hasta 1,76x al cierre de 2025, situándose por debajo de 2,0x.",
+        implication: "La empresa necesitaría 1,76 años de generación EBITDA íntegra para liquidar sus pasivos financieros netos.",
+        boardAction: "Preservar el nivel por debajo de 2,0x antes de comprometer deuda adicional para proyectos de capex o adquisiciones regionales."
+      },
+      liquidity: {
+        title: "Razón Corriente: 0,84x",
+        badge: "Alerta de Liquidez",
+        badgeColor: "bg-rose-100 text-rose-800",
+        dax: "Razon_Corriente = DIVIDE([Activo_Corriente], [Pasivo_Corriente], 0)",
+        description: "El activo corriente ($519.871 MM) es inferior al pasivo corriente ($621.829 MM), resultando en un fondo de maniobra negativo de -$101.958 MM.",
+        implication: "Alpina opera apalancada en el crédito con proveedores agropecuarios y una alta rotación de inventarios perecederos.",
+        boardAction: "Urgente: Reprogramar pasivos bancarios de tesorería a mediano plazo para restituir la liquidez por encima de 1,05x."
+      }
+    };
+
+    function openKpiModal(kpiKey) {
+      const data = kpiDetails[kpiKey];
+      if (!data) return;
+
+      const html = `
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${data.badgeColor}">${data.badge}</span>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-2">${data.title}</h3>
+        <p class="text-xs text-slate-600 mb-3">${data.description}</p>
+        
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 mb-3 text-[11px] font-mono text-slate-700">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Métrica Power BI (DAX):</span>
+          ${data.dax}
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 bg-blue-50/50 rounded-lg border border-blue-100">
+            <strong class="text-blue-900 block mb-0.5">Diagnóstico Técnico:</strong>
+            <span class="text-slate-600">${data.implication}</span>
+          </div>
+          <div class="p-2.5 bg-emerald-50/50 rounded-lg border border-emerald-100">
+            <strong class="text-emerald-900 block mb-0.5">Recomendación Junta Directiva:</strong>
+            <span class="text-slate-600">${data.boardAction}</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('kpiModal').classList.remove('hidden');
+    }
+
+    function closeKpiModal() {
+      document.getElementById('kpiModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
